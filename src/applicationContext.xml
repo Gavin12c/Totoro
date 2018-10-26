@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+	<!-- 注解开关 -->
+	<context:component-scan base-package="com.hy"></context:component-scan>
+
+
+	<!-- 事物管理对象 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 开启 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+
+	<!-- 配置连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl" value="jdbc:mysql:///totoro"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+
+	<!-- 使用Spring整合Hibernate框架 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- hibernate配置文件，显示SQL语句，生成表结构，格式化，数据库方言 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		
+        	<!-- 映射文件导入 -->
+        	<property name="mappingDirectoryLocations">
+					<value>classpath:com/hy/bean</value>
+        	</property>
+		<!-- 扫描entity类 -->
+		<!-- <property name="packagesToScan" value="com.hy.bean" /> -->
+	</bean>
+
+
+
+	<!-- 用户模块 -->
+	<!-- <bean  name="customerAction" class="com.itheima.action.CustomerAction">
+		<property name="customerService" ref="customerService"></property>
+	</bean> -->
+
+	<!-- <bean id="customerService" name="customerService" class="com.itheima.service.CustomerServiceImpl">
+		<property name="customerDao" ref="customerDao"></property>
+	</bean>
+
+	<bean id="customerDao" name="customerDao" class="com.itheima.dao.CustomerDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean> -->
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+	<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+</beans>
+
+
+
+
+
+
+
+
+
+
+
